@@ -20,7 +20,7 @@ public class HomeController {
 	@GetMapping
 	public String home(Model model) {
 		List<Image> images = new ArrayList<Image>();
-		images = Arrays.asList(rest.getForObject("http://localhost:8082/api", Image[].class));
+		images = Arrays.asList(rest.getForObject("https://file-managementt.herokuapp.com/api", Image[].class));
 		model.addAttribute("images", images);
 		return "file";
 	}

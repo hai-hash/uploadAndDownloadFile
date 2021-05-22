@@ -26,7 +26,7 @@ public class ImageController {
 	@GetMapping
 	public String getAll(Model model) {
 		List<Image> images = new ArrayList<Image>();
-		images = Arrays.asList(rest.getForObject("http://localhost:8082/api", Image[].class));
+		images = Arrays.asList(rest.getForObject("https://file-managementt.herokuapp.com/api", Image[].class));
 		model.addAttribute("images", images);
 		return "file";
 		
@@ -34,7 +34,7 @@ public class ImageController {
 	
 	@GetMapping("/download")
 	public ResponseEntity<Resource> downloadImage(@RequestParam("id") String id,HttpServletRequest request) {
-		ResponseEntity<Resource> re = rest.getForEntity("http://localhost:8082/api/download/image/{id}", Resource.class,Long.parseLong(id));
+		ResponseEntity<Resource> re = rest.getForEntity("https://file-managementt.herokuapp.com/api/download/image/{id}", Resource.class,Long.parseLong(id));
 		return re;
 	}
 
