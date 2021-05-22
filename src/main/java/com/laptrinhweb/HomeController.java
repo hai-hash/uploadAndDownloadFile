@@ -23,10 +23,10 @@ public class HomeController {
 	private RestTemplate rest = new RestTemplate();
 	@GetMapping
 	public String home(Model model) {
-		List<Image> images = new ArrayList<Image>();
+//		List<Image> images = new ArrayList<Image>();
 //		images = Arrays.asList(rest.getForObject("https://file-managementt.herokuapp.com/api", Image[].class));
-		images = imageRepo.findAll();
-		model.addAttribute("images", images);
+//		images = imageRepo.findAll();
+//		model.addAttribute("images", images);
 		return "file";
 	}
 	
