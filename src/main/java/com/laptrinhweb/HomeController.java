@@ -21,6 +21,8 @@ public class HomeController {
 	private ImageRepository imageRepo;
 	@GetMapping
 	public String home(Model model) {
+		String path = System.getProperty("user.dir");
+		System.out.print(path);
 		List<Image> images = new ArrayList<Image>();
 		images = imageRepo.findAll();
 		model.addAttribute("images", images);

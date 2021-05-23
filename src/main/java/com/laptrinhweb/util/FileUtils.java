@@ -17,12 +17,13 @@ import com.laptrinhweb.repository.ImageRepository;
 @Component
 public class FileUtils {
 	
-	private final String root = "../project-web/src/main/resources/static";
+	private final String root = "..\\uploadAndDownloadFile\\src\\main\\resources\\static";
 	@Autowired
 	private ImageRepository imageRepo;
 	
 	public void updateOrWrite(byte[] base64,String path,String name) {
-		File file = new File(StringUtils.substringBeforeLast(root + path, "/"));
+		String root1 = System.getProperty("user.dir");
+		File file = new File(StringUtils.substringBeforeLast(root + path, "\\"));
 		
 		
 		if(!file.exists()) {
