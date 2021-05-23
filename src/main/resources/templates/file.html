@@ -81,8 +81,8 @@ choose:
 				<div class="col dol mb-5">
 	
 				<img class="image"  th:src="@{/images/icon.png}" width="50" height="50">
-				<a  th:href=@{/image/download(id=${image.id})}>
-				[[${image.filePath}]]
+				<a  th:href=@{/download/image(id=${image.id})}>
+				[[${image.nameFile}]]
 				</a>
 				
 				
