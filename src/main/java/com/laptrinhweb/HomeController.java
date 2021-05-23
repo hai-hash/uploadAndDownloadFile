@@ -1,5 +1,8 @@
 package com.laptrinhweb;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -8,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -27,12 +32,18 @@ import org.springframework.web.client.RestTemplate;
 import com.laptrinhweb.Exception.MyFileNotFoundException;
 import com.laptrinhweb.domain.Image;
 import com.laptrinhweb.repository.ImageRepository;
+import com.laptrinhweb.util.MediaTypeUtils;
 
 @Controller
 @RequestMapping(path = "/")
 public class HomeController {
 	@Autowired
 	private ImageRepository imageRepo;
+	
+	@Autowired
+    private ServletContext servletContext;
+	
+	
 	@GetMapping
 	public String home(Model model) {
 		String path = System.getProperty("user.dir");
@@ -45,38 +56,21 @@ public class HomeController {
 	
 	
 	@GetMapping(value = "/download/image")
-	public ResponseEntity<Resource> dowload(@RequestParam("id") String id, HttpServletRequest request) {
+	public ResponseEntity<InputStreamResource> dowload(@RequestParam("id") String id, HttpServletRequest request) throws FileNotFoundException {
 		System.out.println(id);
 		Image image = imageRepo.findOneById(Long.parseLong(id));
-		try {
-
-			String filePath1 = image.getFilePath();
-			Path filePath = Paths.get(filePath1);
-			Resource resource = new UrlResource(filePath.toUri());
-			if (resource.exists()) {
-				String contentType = null;
-				try {
-					contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-					System.out.println(resource.getFile().getAbsolutePath());
-					
-				} catch (IOException ex) {
-
-				}
-
-				if (contentType == null) {
-					contentType = "application/octet-stream";
-				}
-				return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
-						.header(HttpHeaders.CONTENT_DISPOSITION,
-								"attachment; filename=\"" + resource.getFilename() + "\"")
-						.body(resource);
-			} else {
-				throw new MyFileNotFoundException("File not found " + image.getNameFile());
-			}
-		} catch (MalformedURLException e) {
-
-			throw new MyFileNotFoundException("File not found " + image.getNameFile(), e);
-		}
+		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, image.getNameFile());
+		 File file = new File(image.getFilePath());
+		 InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+		 
+		 return ResponseEntity.ok()
+	                // Content-Disposition
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+	                // Content-Type
+	                .contentType(mediaType)
+	                // Contet-Length
+	                .contentLength(file.length()) //
+	                .body(resource);
 	}
 	
 }
