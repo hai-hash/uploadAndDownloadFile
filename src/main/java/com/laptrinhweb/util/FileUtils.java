@@ -17,7 +17,7 @@ import com.laptrinhweb.repository.ImageRepository;
 @Component
 public class FileUtils {
 	
-	private final String root = "../uploadAndDownloadFile1/src/main/resources/static";
+	private final String root = "../uploadAndDownloadFile/src/main/resources/static";
 	@Autowired
 	private ImageRepository imageRepo;
 	
