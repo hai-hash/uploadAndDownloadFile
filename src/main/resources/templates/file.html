@@ -70,5 +70,68 @@ choose:
  <button type="submit" class="btn btn-warning">Load lại</button>
 </form>
 </div>
+
+
+
+<div th:if="${images}">
+<div class="container " >
+		<div class="row row-cols-5 ">
+			<th:block th:each="image : ${images}">
+			
+				<div class="col dol mb-5">
+	
+				<img class="image"  th:src="@{/images/icon.png}" width="50" height="50">
+				<a  th:href=@{/image/download(id=${image.id})}>
+				[[${image.nameFile}]]
+				</a>
+				
+				
+				</div>
+			</th:block>
+		</div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+});
+
+$('#uploadImage').change(function(){
+
+    var dataArray = {}
+	var files = $(this)[0].files[0]
+    if(files != undefined){
+        var reader = new FileReader()
+        reader.onload=function(e){
+            dataArray["fileName"] = files.name
+            dataArray["base64"] = e.target.result
+         
+            uploadFile(dataArray)
+
+        }
+        reader.readAsDataURL(files)
+    }
+
+});
+
+function uploadFile(data){
+    $.ajax({
+    	url: "/api/updatefile",
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(res){
+            console.log(res)
+        },
+        error: function(res){
+            console.log(res)
+        }
+        
+    })
+}
+
+</script>
 </body>
 </html>
