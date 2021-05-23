@@ -44,7 +44,7 @@ public class HomeController {
 	}
 	
 	
-	@GetMapping(value = "/download/image/{id}")
+	@GetMapping(value = "/download/image")
 	public ResponseEntity<Resource> dowload(@RequestParam("id") String id, HttpServletRequest request) {
 		System.out.println(id);
 		Image image = imageRepo.findOneById(Long.parseLong(id));
