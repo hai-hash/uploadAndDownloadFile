@@ -41,7 +41,7 @@ public class FileApi {
 	public ResponseEntity<Void> updateFile(@RequestBody File1 file1){
 		System.out.print("hello , tôi đã vào");
 		byte[] base64 = Base64.getDecoder().decode(file1.getBase64().getBytes());
-		fileUtil.updateOrWrite(base64, "\\upload\\"+ file1.getFileName(),file1.getFileName());
+		fileUtil.updateOrWrite(base64, "/upload/"+ file1.getFileName(),file1.getFileName());
 		return ResponseEntity.noContent().build();
 	}
 	
