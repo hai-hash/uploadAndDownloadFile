@@ -5,9 +5,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import com.laptrinhweb.domain.FileStorageProperties;
+
 
 
 @SpringBootApplication
+@EnableConfigurationProperties({
+    FileStorageProperties.class
+})
 public class ProjectWebApplication {
 
 	public static void main(String[] args) {
