@@ -9,6 +9,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.laptrinhweb.domain.Image;
 import com.laptrinhweb.repository.ImageRepository;
@@ -42,6 +43,25 @@ public class FileUtils {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void update(MultipartFile files,String path,String fileName) {
+		File file = new File(StringUtils.substringBeforeLast(root + path, "\\"));
+		if(!file.exists()) {
+			file.mkdir();
+		}
+		File file1 = new File(root + path);
+		try(FileOutputStream fileOutPutStream = new FileOutputStream(file1)) {
+			fileOutPutStream.write(files.getBytes());
+			Image image = new Image();
+			image.setNameFile(fileName);
+			image.setFilePath(file1.getAbsolutePath());
+			image.setSize(files.getBytes().length);
+			image.setTimeUpload(new Date());
+			imageRepo.save(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

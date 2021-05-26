@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<style>
+
+a{
+text-decoration: none;
+color: black;
+}
+.image:hover{
+width: 51px;
+height: 51px;
+}
+.ht{
+width: 50px;
+height: 50px;
+background: red;
+border-radius: 100%;
+animation: 
+          pulse 3s ease infinite alternate,
+          nudge 50s linear infinite alternate;
+position: absolute;
+
+}
+
+@keyframes pulse{
+            0%,100%{
+                background-color: red;
+            }
+            50%{
+                background-color: yellow;
+            }
+            
+            70%{
+                background-color:pink;
+            }
+        }
+        
+@keyframes nudge{
+            0%,100%{
+                transform: translate(0,0);
+            }
+            25%{
+                transform: translate(1000px,0);
+            }
+            50%{
+                transform: translate(1000px,590px);
+            }
+            75%{
+                transform: translate(0,590px);
+
+            }
+            
+        }
+</style>
+<body>
+<div class="ht">
+</div>
+    <form th:action="@{/}"  id="upload_form" enctype="multipart/form-data" method="POST">
+      <input type="file" name="file1" id="file1" onchange="uploadFile()"><br>
+      <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
+      <h3 id="status"></h3>
+      <p id="loaded_n_total"></p>
+    </form>
+    
+    
+<div th:if="${images}">
+<div class="container " >
+		<div class="row row-cols-5 ">
+			<th:block th:each="image : ${images}">
+			
+				<div class="col dol mb-5">
+	
+				<img class="image"  th:src="@{/images/icon.png}" width="50" height="50">
+				<a  th:href=@{/download/image(id=${image.id})}>
+				[[${image.nameFile}]]
+				</a>
+				
+				
+				</div>
+			</th:block>
+		</div>
+</div>
+</div>
+
+    <script>
+  function _(el) {
+  return document.getElementById(el);
+}
+
+function uploadFile() {
+  var file = _("file1").files[0];
+  // alert(file.name+" | "+file.size+" | "+file.type);
+  var formdata = new FormData();
+  formdata.append("file1", file);
+  var ajax = new XMLHttpRequest();
+  ajax.upload.addEventListener("progress", progressHandler, false);
+  ajax.addEventListener("load", completeHandler, false);
+  ajax.addEventListener("error", errorHandler, false);
+  ajax.addEventListener("abort", abortHandler, false);
+  ajax.open("POST", "/"); 
+  ajax.send(formdata);
+ 
+}
+
+function progressHandler(event) {
+  _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
+  var percent = (event.loaded / event.total) * 100;
+  _("progressBar").value = Math.round(percent);
+  _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
+}
+
+function completeHandler(event) {
+  _("status").innerHTML = "upload thành công, mời bạn load lại trang để cập nhật";
+  _("progressBar").value = 0; //wil clear progress bar after successful upload
+}
+
+function errorHandler(event) {
+  _("status").innerHTML = "Upload Failed";
+}
+
+function abortHandler(event) {
+  _("status").innerHTML = "Upload Aborted";
+}
+    </script>
+</body>
+</html>

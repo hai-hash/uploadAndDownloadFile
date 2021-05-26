@@ -14,11 +14,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.laptrinhweb.domain.Image;
 import com.laptrinhweb.repository.ImageRepository;
+import com.laptrinhweb.util.FileUtils;
 import com.laptrinhweb.util.MediaTypeUtils;
 
 @Controller
@@ -30,6 +35,8 @@ public class HomeController {
 	@Autowired
     private ServletContext servletContext;
 	
+	@Autowired
+	private FileUtils fileUtil;
 	
 	@GetMapping
 	public String home(Model model) {
@@ -38,7 +45,14 @@ public class HomeController {
 		List<Image> images = new ArrayList<Image>();
 		images = imageRepo.findAll();
 		model.addAttribute("images", images);
-		return "file";
+		return "test";
+	}
+	
+	@PostMapping
+	public String uploadImage(@RequestParam("file1") MultipartFile file) {
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		fileUtil.update(file, "\\upload\\" + fileName,fileName);
+		return "redirect:/";
 	}
 	
 	
@@ -51,12 +65,9 @@ public class HomeController {
 		 InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 		 
 		 return ResponseEntity.ok()
-	                // Content-Disposition
 	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-	                // Content-Type
 	                .contentType(mediaType)
-	                // Contet-Length
-	                .contentLength(file.length()) //
+	                .contentLength(file.length()) 
 	                .body(resource);
 	}
 	
